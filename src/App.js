@@ -46,11 +46,11 @@ class App extends React.Component {
   }
 
   render() {
-    if (this.state.user === null) {
+    
+    if ( this.state.user === null) {
       return (
         <div>
-        <h1>Muistiinpanot</h1>
-
+        <h2>Blogs</h2>
         <Notification message={this.state.error} />
 
         <div>
@@ -79,11 +79,12 @@ class App extends React.Component {
           </form>
         
         </div>
-        </div>
+      </div>
       )
     }
     return (
       <div>
+        <p>{this.state.user.name} logged in</p>
         <h2>blogs</h2>
         {this.state.blogs.map(blog => 
           <Blog key={blog._id} blog={blog}/>
