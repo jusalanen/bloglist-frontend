@@ -29,6 +29,8 @@ class App extends React.Component {
         username: this.state.username,
         password: this.state.password
       })
+
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
   
       this.setState({ username: '', password: '', user})
     } catch(exception) {
@@ -58,7 +60,7 @@ class App extends React.Component {
           
           <form onSubmit={this.login}>
           <div>
-            käyttäjätunnus  
+            käyttäjätunnus_
               <input
                 type="text"
                 name="username"
@@ -67,7 +69,7 @@ class App extends React.Component {
               />
           </div>
           <div>
-            salasana  
+            salasana_ 
               <input
                 type="password"
                 name="password"
@@ -84,8 +86,11 @@ class App extends React.Component {
     }
     return (
       <div>
-        <p>{this.state.user.name} logged in</p>
-        <h2>blogs</h2>
+        <h2>Blogs</h2>
+        <tr><td width='200'>{this.state.user.name} logged in</td>
+        <td width='50'><button onClick = {function() {
+          window.localStorage.removeItem('loggedBlogappUser')
+        }}  >logout</button></td></tr><br></br>
         {this.state.blogs.map(blog => 
           <Blog key={blog._id} blog={blog}/>
         )}
