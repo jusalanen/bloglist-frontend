@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/loginService'
 import Notification from './components/Notification'
+import Err from './components/Err'
 
 class App extends React.Component {
   constructor(props) {
@@ -13,40 +14,48 @@ class App extends React.Component {
       password: '',
       user: null,
       error: null,
+      notification: null,
       title: '',
       author: '',
       url: ''
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
+    let loggedUserJSON = null
+    if (typeof window.localStorage["loggedBlogappUser"] !== "undefined"
+    && window.localStorage["loggedBlogappUser"] !== "undefined") {
+      loggedUserJSON = window.localStorage.getItem('loggedBlogappUser') 
+    }
+    if (loggedUserJSON) {
+      console.log(loggedUserJSON)
+      const user = JSON.parse(loggedUserJSON)
+      
+      this.setState({ user })
+      blogService.setToken(user.token)
+    }
     blogService.getAll().then(blogs =>
       this.setState({ blogs })
     )
-
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      this.setState({user})
-      blogService.setToken(user.token)
-    }
   }
 
   login = async (event) => {
     event.preventDefault()
-    try{
+    try {
       const user = await loginService.login({
         username: this.state.username,
         password: this.state.password
       })
 
+      loginService.setToken(user.token)
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-
+      
       this.setState({ username: '', password: '', user})
-    } catch(exception) {
+
+    } catch (exception) {
+
       this.setState({
-        error: 'käyttäjätunnus tai salasana virheellinen',
+        error: 'käyttäjätunnus tai salasana virheellinen'
       })
       setTimeout(() => {
         this.setState({ error: null })
@@ -70,8 +79,12 @@ class App extends React.Component {
           blogs: this.state.blogs.concat(newBlog),
           title: '',
           author: '',
-          url: ''
+          url: '',
+          notification: 'added blog ' + newBlog.title
         })
+        setTimeout(() => {
+          this.setState({ notification: null })
+        }, 5000)
       })
   }
 
@@ -89,7 +102,7 @@ class App extends React.Component {
       return (
         <div>
         <h2>Blogs</h2>
-        <Notification message={this.state.error} />
+        <Err message={this.state.error} />
 
         <div>
           <h2>Kirjaudu sovellukseen</h2>
@@ -123,9 +136,11 @@ class App extends React.Component {
     return (
       <div>
         <h2>Blogs</h2>
+        <Notification message={this.state.notification} />
         <p>{this.state.user.name} logged in  </p><button onClick = {function() {
           window.localStorage.removeItem('loggedBlogappUser')
         }}  >logout</button><br></br>
+        
         <h4>add new</h4>
 
         <form onSubmit={this.addBlog}>
