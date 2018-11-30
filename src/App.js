@@ -47,7 +47,7 @@ class App extends React.Component {
         password: this.state.password
       })
 
-      loginService.setToken(user.token)
+      const tok = await blogService.setToken(user.token)
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       
       this.setState({ username: '', password: '', user})
@@ -96,6 +96,10 @@ class App extends React.Component {
     this.setState({ [event.target.name]: event.target.value })
   }
 
+  logout = () => {
+    this.setState({ user: null })
+  }
+
   render() {
     
     if ( this.state.user === null) {
@@ -137,9 +141,10 @@ class App extends React.Component {
       <div>
         <h2>Blogs</h2>
         <Notification message={this.state.notification} />
-        <p>{this.state.user.name} logged in  </p><button onClick = {function() {
+        {this.state.user.name} logged in  <button onClick = { () => {
           window.localStorage.removeItem('loggedBlogappUser')
-        }}  >logout</button><br></br>
+          this.logout()
+          }} >logout</button><br></br>
         
         <h4>add new</h4>
 
