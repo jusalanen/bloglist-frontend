@@ -174,8 +174,7 @@ class App extends React.Component {
 
         <h3>blogs</h3>
         {this.state.blogs.map(blog => 
-          <Blog key={blog._id} blog={blog}/>
-        )}
+          <Blog key={blog._id} blog={blog}></Blog> ) }
       </div>
     );
   }
