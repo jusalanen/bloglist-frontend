@@ -11,7 +11,7 @@ const LoginForm = ({ handleSubmit, handleChange, username, password }) => {
         <input
           type="text"
           name="username"
-            value={username}
+          value={username}
           onChange={this.handleChange}
         />
       </div>

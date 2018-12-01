@@ -4,6 +4,8 @@ import blogService from './services/blogs'
 import loginService from './services/loginService'
 import Notification from './components/Notification'
 import Err from './components/Err'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 class App extends React.Component {
   constructor(props) {
@@ -47,7 +49,7 @@ class App extends React.Component {
         password: this.state.password
       })
 
-      const tok = await blogService.setToken(user.token)
+      await blogService.setToken(user.token)
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       
       this.setState({ username: '', password: '', user})
@@ -55,7 +57,7 @@ class App extends React.Component {
     } catch (exception) {
 
       this.setState({
-        error: 'käyttäjätunnus tai salasana virheellinen'
+        error: 'wrong username or password'
       })
       setTimeout(() => {
         this.setState({ error: null })
@@ -98,22 +100,44 @@ class App extends React.Component {
 
   logout = () => {
     this.setState({ user: null })
+    window.localStorage.removeItem('loggedBlogappUser')
   }
 
   render() {
+    const blogForm = () => {
+      const hideWhenVisible = { display: this.state.blogVisible ? 'none' : '' }
+      const showWhenVisible = { display: this.state.blogVisible ? '' : 'none' }
     
-    if ( this.state.user === null) {
       return (
         <div>
-        <h2>Blogs</h2>
+          <div style={hideWhenVisible}>
+            <button onClick={e => this.setState({ blogVisible: true })}>add blog</button>
+          </div>
+          <div style={showWhenVisible}>
+            <BlogForm
+              title={this.state.username}
+              author={this.state.password}
+              url= {this.state.url}
+              handleChange={this.handleBlogFieldChange}
+              handleSubmit={this.addBlog}
+            /><button onClick={e => this.setState({ blogVisible: false })}>cancel</button>
+          </div>
+        </div>
+      )
+    }
+    
+    if (this.state.user === null) {
+      return (
+        <div>
+        <h1>Blogs</h1>
         <Err message={this.state.error} />
 
         <div>
-          <h2>Kirjaudu sovellukseen</h2>
+          <h3>Login to application</h3>
           
           <form onSubmit={this.login}>
           <div>
-            käyttäjätunnus_
+            username :
               <input
                 type="text"
                 name="username"
@@ -121,16 +145,17 @@ class App extends React.Component {
                 onChange={this.handleLoginFieldChange}
               />
           </div>
+          <br></br>
           <div>
-            salasana_ 
+            password : 
               <input
                 type="password"
                 name="password"
                 value={this.state.password}
                 onChange={this.handleLoginFieldChange}
               />
-          </div>
-          <button type="submit">kirjaudu</button>
+          </div><br></br>
+          <button type="submit">login</button>
           </form>
         
         </div>
@@ -139,39 +164,15 @@ class App extends React.Component {
     }
     return (
       <div>
-        <h2>Blogs</h2>
+        <h1>Blogs</h1>
         <Notification message={this.state.notification} />
         {this.state.user.name} logged in  <button onClick = { () => {
-          window.localStorage.removeItem('loggedBlogappUser')
           this.logout()
-          }} >logout</button><br></br>
+          }} >logout</button><br></br><br></br>
         
-        <h4>add new</h4>
+        {blogForm()}
 
-        <form onSubmit={this.addBlog}>
-        title_
-        <input
-          type="text"
-          name="title"
-          value={this.state.title}
-          onChange={this.handleBlogFieldChange}
-        /><br></br>
-        author_
-        <input
-          type="text"
-          name="author"
-          value={this.state.author}
-          onChange={this.handleBlogFieldChange}
-        /><br></br>       
-        url_
-       <input
-          type="text"
-          name="url"
-          value={this.state.url}
-          onChange={this.handleBlogFieldChange}
-        /><br></br><br></br>
-          <button type="submit">add</button>
-        </form><br></br>
+        <h3>blogs</h3>
         {this.state.blogs.map(blog => 
           <Blog key={blog._id} blog={blog}/>
         )}
