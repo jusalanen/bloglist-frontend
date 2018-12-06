@@ -55,7 +55,6 @@ class App extends React.Component {
       this.setState({ username: '', password: '', user})
 
     } catch (exception) {
-
       this.setState({
         error: 'wrong username or password'
       })
@@ -90,11 +89,34 @@ class App extends React.Component {
       })
   }
 
-  handleLoginFieldChange = (event) => {
-    this.setState({ [event.target.name]: event.target.value })
+  likeBlog = (blog) => {
+    blog.likes = blog.likes + 1
+    blogService.update(blog._id, blog)
+    .then(updatBlog => {
+      this.setState({
+        blogs: this.blogs.map(blog => 
+          blog._id !== updatBlog._id ? blog : updatBlog)
+      })
+    }).catch(e => {
+      console.log(e.message)
+      this.setState({ error: 'blog removed from server' })
+    })
+    setTimeout(() => {
+      this.setState({ error: null })
+    }, 5000)
   }
 
-  handleBlogFieldChange = (event) => {
+  showDetails = (blog) => {
+    return (
+      <div>
+        <p>{blog.url}</p>
+        <p>{blog.likes}</p>
+        <p>{blog.user.name}</p>
+      </div>
+    )
+  }  
+
+  handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
 
@@ -118,7 +140,7 @@ class App extends React.Component {
               title={this.state.username}
               author={this.state.password}
               url= {this.state.url}
-              handleChange={this.handleBlogFieldChange}
+              handleChange={this.handleChange}
               handleSubmit={this.addBlog}
             /><button onClick={e => this.setState({ blogVisible: false })}>cancel</button>
           </div>
@@ -142,7 +164,7 @@ class App extends React.Component {
                 type="text"
                 name="username"
                 value={this.state.username}
-                onChange={this.handleLoginFieldChange}
+                onChange={this.handleChange}
               />
           </div>
           <br></br>
@@ -152,7 +174,7 @@ class App extends React.Component {
                 type="password"
                 name="password"
                 value={this.state.password}
-                onChange={this.handleLoginFieldChange}
+                onChange={this.handleChange}
               />
           </div><br></br>
           <button type="submit">login</button>
@@ -163,21 +185,28 @@ class App extends React.Component {
       )
     }
     return (
-      <div>
+      <div>                  
         <h1>Blogs</h1>
-        <Notification message={this.state.notification} />
+       <Notification message={this.state.notification} /> 
+       <Err message={this.state.error} />
+
         {this.state.user.name} logged in  <button onClick = { () => {
           this.logout()
           }} >logout</button><br></br><br></br>
         
         {blogForm()}
 
-        <h3>blogs</h3>
-        {this.state.blogs.map(blog => 
-          <Blog key={blog._id} blog={blog}></Blog> ) }
+        <h3>blogs</h3>      
+        {this.state.blogs.map(blog => {
+          return (
+            <div onClick={ () => { 
+              this.showDetails(blog) }}><Blog key={blog._id} blog={blog} ></Blog> <button onClick = { () => {
+                this.likeBlog(blog)}} >like</button></div>
+          )        
+        })}
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App
