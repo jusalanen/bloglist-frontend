@@ -88,33 +88,6 @@ class App extends React.Component {
       })
   }
 
-  likeBlog = (blog) => {
-    blog.likes = blog.likes + 1
-    blogService.update(blog._id, blog)
-    .then(updatBlog => {
-      this.setState({
-        blogs: this.blogs.map(blog => 
-          blog._id !== updatBlog._id ? blog : updatBlog)
-      })
-    }).catch(e => {
-      console.log(e.message)
-      this.setState({ error: 'blog removed from server' })
-    })
-    setTimeout(() => {
-      this.setState({ error: null })
-    }, 5000)
-  }
-
-  showDetails = (blog) => {
-    return (
-      <div>
-        <p>{blog.url}</p>
-        <p>{blog.likes}</p>
-        <p>{blog.user.name}</p>
-      </div>
-    )
-  }  
-
   handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
