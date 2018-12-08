@@ -5,7 +5,6 @@ import loginService from './services/loginService'
 import Notification from './components/Notification'
 import Err from './components/Err'
 import BlogForm from './components/BlogForm'
-import Togglable from './components/Togglable'
 
 class App extends React.Component {
   constructor(props) {
@@ -150,8 +149,8 @@ class App extends React.Component {
     
     if (this.state.user === null) {
       return (
-        <div>
-        <h1>Blogs</h1>
+      <div>
+        <h1>Blogs App</h1>
         <Err message={this.state.error} />
 
         <div>
@@ -186,7 +185,7 @@ class App extends React.Component {
     }
     return (
       <div>                  
-        <h1>Blogs</h1>
+        <h1>Blogs App</h1>
        <Notification message={this.state.notification} /> 
        <Err message={this.state.error} />
 
@@ -199,11 +198,7 @@ class App extends React.Component {
         <h3>blogs</h3>      
         {this.state.blogs.map(blog => {
           return (
-            <div onClick={ () => { 
-              this.showDetails(blog) }}><Blog key={blog._id} blog={blog} ></Blog> <button onClick = { () => {
-                this.likeBlog(blog)}} >like</button></div>
-          )        
-        })}
+          <Blog key={blog._id} blog={blog}></Blog> )})}
       </div>
     )
   }
