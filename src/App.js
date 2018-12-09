@@ -80,7 +80,7 @@ class App extends React.Component {
           title: '',
           author: '',
           url: '',
-          notification: 'added blog ' + newBlog.title
+          notification: 'added blog ' + newBlog.title + ' by ' + newBlog.author
         })
         setTimeout(() => {
           this.setState({ notification: null })
@@ -109,9 +109,9 @@ class App extends React.Component {
           </div>
           <div style={showWhenVisible}>
             <BlogForm
-              title={this.state.username}
-              author={this.state.password}
-              url= {this.state.url}
+              title={this.state.title}
+              author={this.state.author}
+              url={this.state.url}
               handleChange={this.handleChange}
               handleSubmit={this.addBlog}
             /><button onClick={e => this.setState({ blogVisible: false })}>cancel</button>
@@ -170,8 +170,7 @@ class App extends React.Component {
 
         <h3>blogs</h3>      
         {this.state.blogs.map(blog => {
-          return (
-          <Blog key={blog._id} blog={blog}></Blog> )})}
+          return <Blog key={blog._id} blog={blog} ></Blog> })}
       </div>
     )
   }

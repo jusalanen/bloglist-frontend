@@ -22,9 +22,15 @@ const create = async (newObject) => {
 }
 
 const update = (id, newObject) => {
-    const request = axios.put(`${url}/${id}`, newObject)
-    return request.then(response => response.data)
-  }
+  const request = axios.put(`${url}/${id}`, newObject)
+  return request.then(response => response.data)
+}
+
+const deleteBlog = (id) => {
+  const strDel = url.concat("/", id)
+  const request = axios.delete(strDel)
+  return request
+}
   
 
-export default { getAll, setToken, create, update }
+export default { getAll, setToken, create, update, deleteBlog }

@@ -7,10 +7,11 @@ class Blog extends React.Component {
     super(props)
     this.state = {
       showDet: false,
-      blog: this.props.blog
+      blog: this.props.blog, 
+      
     }
   }
-  
+
   likeBlog = async (blog) => {
     blog.likes = blog.likes + 1
     blog = await blogService.update(blog._id, blog)
@@ -20,6 +21,10 @@ class Blog extends React.Component {
       
   toggle = () => {
     this.setState({ showDet: !this.state.showDet })
+  }
+
+  deleteBlog = (blog) => {
+    blogService.deleteBlog(blog._id)
   }
 
   render() {
@@ -35,8 +40,9 @@ class Blog extends React.Component {
         <div style={showOrNot}>
         {blog.url}<br></br>
         likes {blog.likes} <button onClick ={ () => {
-                    this.likeBlog(blog)}} >like</button><br></br>
+                    this.likeBlog(blog) }} >like</button><br></br>
         added by {blog.user.name}<br></br>
+        <button onClick ={() => { this.deleteBlog(blog) }}>delete blog</button><br></br>
         </div>
         <br></br>     
       </div>

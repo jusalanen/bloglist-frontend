@@ -24,7 +24,7 @@ const BlogForm = ({ handleSubmit, handleChange, title, author, url }) => {
         type="text"
         name="url"
         value={url}
-        onChange={this.handleChange}
+        onChange={handleChange}
       /><br></br><br></br>
       <button type="submit">add</button>
       </form>
