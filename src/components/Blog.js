@@ -1,14 +1,17 @@
 import React from 'react'
 import blogService from '../services/blogs'
+import PropTypes from 'prop-types'
 
 
 class Blog extends React.Component {
+  static propTypes = {
+    blog: PropTypes.object.isRequired
+  }
   constructor(props) {
     super(props)
     this.state = {
       showDet: false,
-      blog: this.props.blog, 
-      
+      blog: this.props.blog
     }
   }
 
