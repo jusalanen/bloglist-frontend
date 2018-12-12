@@ -22,7 +22,7 @@ class App extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let loggedUserJSON = null
     if (typeof window.localStorage["loggedBlogappUser"] !== "undefined"
     && window.localStorage["loggedBlogappUser"] !== "undefined") {
